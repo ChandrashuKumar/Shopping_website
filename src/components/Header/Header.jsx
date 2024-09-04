@@ -1,21 +1,25 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { MagnifyingGlassIcon, ShoppingCartIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "../../images/icon.svg";
 import { logout } from "../../store/authSlice";
+import authService from '../../appwrite/auth';
 
 function Header() {
     const authStatus = useSelector((state) => state.auth.status);
-    const userEmail = useSelector((state) => state.auth.userData.email);
+    const userEmail = useSelector((state) => state.auth.userData?.email || '');
     const cartItems = useSelector((state) => state.cart.items);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    
     const handleLogout = () => {
-        dispatch(logout());
+        authService.logout().then(() => {
+            dispatch(logout())
+        })
         navigate('/'); // Redirect to the homepage
     };
 
@@ -87,7 +91,6 @@ function Header() {
                             <div className="text-xs xl:text-sm cursor-pointer">Returns</div>
                             <div className="text-sm xl:text-base font-bold cursor-pointer">& Orders</div>
                         </div>
-                        <Link to="/cart">
                             <div className="flex pr-3 pl-3">
                                 <ShoppingCartIcon className="h-[48px]" />
                                 <div className="relative">
@@ -97,7 +100,6 @@ function Header() {
                                 </div>
                                 <div className="mt-7 text-xs xl:text-sm font-bold">Cart</div>
                             </div>
-                        </Link>
                         <Bars3Icon className="h-[24px] ml-4 cursor-pointer" onClick={toggleSidebar} />
                     </div>
                 </div>
