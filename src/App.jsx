@@ -3,11 +3,14 @@ import { useDispatch } from 'react-redux'
 import authService from "./appwrite/auth"
 import {login, logout} from "./store/authSlice"
 import { Footer, Header } from './components'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 function App() {
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  
 
   useEffect(() => {
     authService.getCurrentUser()
@@ -22,13 +25,13 @@ function App() {
   }, [])
   
   return !loading ? (
-    <div className='min-h-screen flex flex-wrap content-between bg-gray-400'>
+    <div className="min-h-screen flex flex-wrap content-between bg-[url('./images/background.jpg')] bg-cover bg-center bg-no-repeat" >
       <div className='w-full block'>
-        <Header />
+      {!isAuthPage && <Header />}
         <main>
-        <Outlet />
+          <Outlet />
         </main>
-        <Footer />
+      {!isAuthPage && <Footer />}
       </div>
     </div>
   ) : null
