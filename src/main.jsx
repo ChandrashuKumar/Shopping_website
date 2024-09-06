@@ -9,6 +9,7 @@ import HomePage from './components/HomePage.jsx'
 import Login from './components/Login.jsx'
 import Signup from './components/SignUp.jsx'
 import { AuthLayout } from './components/index.js'
+import {ProductPage} from './components/index.js'
 
 const router = createBrowserRouter([
     {
@@ -34,7 +35,11 @@ const router = createBrowserRouter([
                         <Signup />
                     </AuthLayout>
                 )
-            }
+            },
+            {
+                path: "/product/:id",
+                element: <ProductPage/>
+            },
         ]
     }
 ])

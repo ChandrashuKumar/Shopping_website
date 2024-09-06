@@ -5,12 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { MagnifyingGlassIcon, ShoppingCartIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "../../images/icon.svg";
 import { logout } from "../../store/authSlice";
+import { setCart } from '../../store/cartSlice';
 import authService from '../../appwrite/auth';
 
 function Header() {
     const authStatus = useSelector((state) => state.auth.status);
     const userEmail = useSelector((state) => state.auth.userData?.email || '');
-    const cartItems = useSelector((state) => state.cart.items);
+    const cartItems = useSelector((state) => state.cart.items || []); // Ensure cartItems is always an array
+    const cartItemsCount = cartItems.length; // Use this for counting items safely
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -19,6 +21,7 @@ function Header() {
     const handleLogout = () => {
         authService.logout().then(() => {
             dispatch(logout())
+            dispatch(setCart([]));
         })
         navigate('/'); // Redirect to the homepage
     };
@@ -26,6 +29,7 @@ function Header() {
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
 
     return (
         <header className="min-w-[1000px]">
@@ -95,7 +99,7 @@ function Header() {
                                 <ShoppingCartIcon className="h-[48px]" />
                                 <div className="relative">
                                     <div className="absolute right-[9px] font-bold m-2 text-orange-400">
-                                        {cartItems.length}
+                                        {cartItemsCount}
                                     </div>
                                 </div>
                                 <div className="mt-7 text-xs xl:text-sm font-bold">Cart</div>

@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux"
 import authService from "../appwrite/auth"
 import { useForm } from "react-hook-form"
 import logo from "../images/icon.svg";
+import service from '../appwrite/services'
+import { setCart } from '../store/cartSlice'
 
 function Login() {
     const navigate = useNavigate()
@@ -20,9 +22,15 @@ function Login() {
             if (session) {
                 const userData = await authService.getCurrentUser()
                 if (userData) {
+                    console.log(userData);
                     dispatch(authLogin({ userData }));
-                    navigate("/")
+                    const cartItems = await service.getCartItemsByUserId(userData.$id);
+                    if(cartItems.length>0){
+                        dispatch(setCart(cartItems));
+                    }
+                    navigate("/");
                 }
+
             }
         } catch (error) {
             setError(error.message)

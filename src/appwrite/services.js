@@ -138,23 +138,42 @@ export class Service{
         }
     }
 
-    async getCartItem({userId,itemId}){
+    async getCartItem({userId, itemId}) {
         try {
-            const item = await this.databases.listDocuments(
+            const response = await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionCartId, 
                 [Query.equal('userId', userId), Query.equal('itemId', itemId)]
-            )
-            if(item){
-                return true;
-            }
-            else{
-                return false;
+            );
+            console.log(response);
+    
+            // Check if the 'documents' array has at least one document
+            if (response.total > 0 && response.documents.length > 0) {
+                return true; // Item is in the cart
+            } else {
+                return false; // Item is not in the cart
             }
         } catch (error) {
             console.log("Appwrite service :: getCartItem :: error", error);
+            return false; // Handle error by returning false
         }
     }
+    
+
+    async getCartItemsByUserId(userId) {
+        try {
+            const items = await this.databases.listDocuments(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectionCartId,
+                [Query.equal('userId', userId)]
+            );
+            return items.documents; // Return the array of cart items
+        } catch (error) {
+            console.log("Appwrite service :: getCartItemsByUserId :: error", error);
+            return [];
+        }
+    }
+    
 
 
 }
