@@ -46,10 +46,15 @@ const ProductPage = () => {
         userId: userId, 
         itemId: id,
         price: product.price,
+        quantity: 1,
     };
 
       // Call Appwrite service to add the item to the cart
-      await service.addToCart(itemToAdd)
+      await service.addToCart({
+        userId: userId, 
+        itemId: id,
+        price: product.price,
+      })
 
       // Dispatch to Redux store
       dispatch(addItem(itemToAdd));

@@ -89,7 +89,7 @@ export class Service{
                     conf.appwriteCollectionCartId,
                     itemDocId,
                     {
-                        quantity: existingItem.documents[0].quantity + quantity
+                        quantity: existingItem.documents[0].quantity + 1
                     }
                 );
             }
@@ -137,6 +137,43 @@ export class Service{
             return false;
         }
     }
+
+    async decrementQuantity({userId, itemId}) {
+        try {
+            const existingItem = await this.databases.listDocuments(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectionCartId, 
+                [Query.equal('userId', userId), Query.equal('itemId', itemId)]
+            );
+    
+            if (existingItem.total > 0) {
+                // Item already exists, check the quantity
+                const itemDocId = existingItem.documents[0].$id;
+                const currentQuantity = existingItem.documents[0].quantity;
+    
+                if (currentQuantity > 1) {
+                    // If quantity is greater than 1, decrement it by 1
+                    return await this.databases.updateDocument(
+                        conf.appwriteDatabaseId,
+                        conf.appwriteCollectionCartId,
+                        itemDocId,
+                        {
+                            quantity: currentQuantity - 1
+                        }
+                    );
+                } else {
+                    // If quantity is 1, delete the item from the cart
+                    return await this.deleteFromCart({ userId, itemId });
+                }
+            } else {
+                return false; // Item does not exist
+            }
+            
+        } catch (error) {
+            console.log("Appwrite service :: decrementQuantity :: error", error);
+        }
+    }
+    
 
     async getCartItem({userId, itemId}) {
         try {
