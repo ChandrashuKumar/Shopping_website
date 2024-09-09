@@ -7,6 +7,7 @@ import logo from "../../images/icon.svg";
 import { logout } from "../../store/authSlice";
 import { setCart } from '../../store/cartSlice';
 import authService from '../../appwrite/auth';
+import Search from '../Search';
 
 function Header() {
     const authStatus = useSelector((state) => state.auth.status);
@@ -48,27 +49,7 @@ function Header() {
                     </div>
                     {/* middle */}
                     <div className="flex grow relative items-center">
-                        <div className="w-full">
-                            <div className="flex items-center h-10 bg-amazonclone-yellow rounded">
-                                <select className="p-2 bg-gray-300 text-black border text-xs xl:text-sm">
-                                    <option>All</option>
-                                    <option>Deals</option>
-                                    <option>Amazon</option>
-                                    <option>Fashion</option>
-                                    <option>Computers</option>
-                                    <option>Home</option>
-                                    <option>Mobiles</option>
-                                </select>
-                                <input
-                                    className="flex px-2 grow items-center h-full rounded-l text-black"
-                                    type="text"
-                                    placeholder='Search'
-                                />
-                                <button className="w-[45px]">
-                                    <MagnifyingGlassIcon className="h-[27px] m-auto stroke-slate-900" />
-                                </button>
-                            </div>
-                        </div>
+                        <Search/>
                     </div>
                     {/* right */}
                     <div className="flex items-center m-4">

@@ -10,7 +10,7 @@ import Login from './components/Login.jsx'
 import Signup from './components/SignUp.jsx'
 import { AuthLayout } from './components/index.js'
 import {ProductPage} from './components/index.js'
-import {Cart, AddressForm} from './components/index.js'
+import {Cart, AddressForm, SearchResults} from './components/index.js'
 
 const router = createBrowserRouter([
     {
@@ -49,6 +49,10 @@ const router = createBrowserRouter([
                 path: "/addresses",
                 element: <AddressForm/>
                 
+            },
+            {
+                path: "/search",
+                element: <SearchResults /> 
             },
         ]
     }

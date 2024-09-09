@@ -69,6 +69,11 @@ const ProductPage = () => {
     checkCart();
   },[]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+  
+
   if (!product?.title) return <h1>Loading Product ...</h1>;
 
   return (
