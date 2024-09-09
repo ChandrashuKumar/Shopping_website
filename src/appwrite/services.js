@@ -11,68 +11,126 @@ export class Service{
         this.databases = new Databases(this.client);
     }
 
-    async createAddress({slug,address,contact,default:isDefault,userId}){
+    async createAddress({ address, contact, default: isDefault, userId }) {
         try {
+            if (isDefault) {
+                // Step 1: Fetch all addresses for the user
+                const addresses = await this.getAllAddresses(userId);
+                
+                // Step 2: Update all other addresses to set default to false
+                await Promise.all(
+                    addresses.map(async (addr) => {
+                        if (addr.default) {
+                            await this.databases.updateDocument(
+                                conf.appwriteDatabaseId,
+                                conf.appwriteCollectionAdrId,
+                                addr.$id,
+                                { default: false }
+                            );
+                        }
+                    })
+                );
+            }
+    
+            // Step 3: Create the new address
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionAdrId,
-                slug,
+                'unique()', // Auto-generate ID
                 {
                     userId,
                     address,
                     contact,
                     default: isDefault
                 }
-            )
+            );
         } catch (error) {
             console.log("Appwrite service :: createAddress :: error", error);
         }
     }
+    
 
-    async updateAddress(slug,{address,contact,default:isDefault}){
+    async updateAddress(id, { address, contact, default: isDefault, userId }) {
         try {
+            if (isDefault) {
+                // Step 1: Fetch all addresses for the user
+                const addresses = await this.getAllAddresses(userId);
+                
+                // Step 2: Update all other addresses to set default to false
+                await Promise.all(
+                    addresses.map(async (addr) => {
+                        if (addr.$id !== id) {
+                            await this.databases.updateDocument(
+                                conf.appwriteDatabaseId,
+                                conf.appwriteCollectionAdrId,
+                                addr.$id,
+                                { default: false }
+                            );
+                        }
+                    })
+                );
+            }
+
+            // Step 3: Update the selected address
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionAdrId,
-                slug,
+                id,
                 {
-                   address,
-                   contact,
-                   default:isDefault
-
+                    address,
+                    contact,
+                    default: isDefault
                 }
-            )
+            );
         } catch (error) {
             console.log("Appwrite service :: updateAddress :: error", error);
         }
     }
+    
 
-    async deleteAddress(slug){
+    async deleteAddress(id) {
         try {
             await this.databases.deleteDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionAdrId,
-                slug
-            )
-            return true
+                id // Use the document ID from Appwrite
+            );
+            return true;
         } catch (error) {
             console.log("Appwrite service :: deleteAddress :: error", error);
-            return false
+            return false;
         }
     }
+    
 
-    async getAddress(slug){
+    async getAddress(id) {
         try {
             return await this.databases.getDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionAdrId,
-                slug
-            )
+                id // Use the document ID from Appwrite
+            );
         } catch (error) {
             console.log("Appwrite service :: getAddress :: error", error);
-            return false
+            return false;
         }
     }
+
+    async getAllAddresses(userId) {
+        try {
+            const response = await this.databases.listDocuments(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectionAdrId,
+                [Query.equal('userId', userId)] // Query filter for userId
+            );
+            return response.documents;
+        } catch (error) {
+            console.log("Appwrite service :: getAllAddresses :: error", error);
+            return [];
+        }
+    }
+    
+    
 
     async addToCart({userId,itemId,price}){
         try {

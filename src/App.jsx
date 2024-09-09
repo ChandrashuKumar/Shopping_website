@@ -4,6 +4,7 @@ import authService from "./appwrite/auth"
 import service from './appwrite/services'
 import {login, logout} from "./store/authSlice"
 import { setCart } from './store/cartSlice'
+import { setAddresses } from './store/addressSlice'
 import { Footer, Header } from './components'
 import { Outlet, useLocation } from 'react-router-dom'
 
@@ -11,7 +12,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup' || location.pathname==='/addresses';
   
 
   useEffect(() => {
@@ -24,6 +25,10 @@ function App() {
           if(cartItems.length>0){
             dispatch(setCart(cartItems));
         }
+        })
+
+        service.getAllAddresses(userData.$id).then((addresses)=>{
+          dispatch(setAddresses(addresses));
         })
       } else {
         dispatch(logout())
