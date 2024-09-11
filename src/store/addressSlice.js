@@ -8,7 +8,6 @@ const addressSlice = createSlice({
   name: 'address',
   initialState,
   reducers: {
-    // Action to add an address
     addAddress: (state, action) => {
       const address = action.payload;
       state.addresses.push(address);

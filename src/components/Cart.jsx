@@ -1,18 +1,34 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ProductDetails } from "./";
 import { GB_CURRENCY } from "../utils/constants";
 import { updateQuantity, removeItem } from "../store/cartSlice";
 import service from "../appwrite/services";
+import { callAPI } from "../utils/CallApi";
 
 const Checkout = () => {
   const products = useSelector((state) => state.cart.items || []);
+  const [productsDetails, setProductsDetails] = useState({});
   const itemsNumber = products.length;
   const subtotal = products.reduce(
     (subtotal, product) => subtotal + product.price * product.quantity,
     0
   );
   const dispatch = useDispatch();
+
+  // Fetch the product
+  useEffect(() => {
+    const getProduct = () => {
+      callAPI("data/products.json").then((productResults) => {
+        setProductsDetails(productResults);
+      });
+    };
+
+    getProduct();
+    console.log() // Call the function to fetch product details
+  }, [products]);
+
 
   const handleIncrement = async (product) => {
     const newQuantity = product.quantity + 1;
@@ -32,14 +48,15 @@ const Checkout = () => {
   };
 
   return (
-    <div className="h-screen bg-amazonclone-background">
+    <div className=" bg-amazonclone-background">
       <div className="min-w-[1000px] max-w-[1500px] m-auto pt-8">
         <div className="grid grid-cols-8 gap-10">
           {/* Products */}
           <div className="col-span-6 bg-white">
             <div className="text-2xl xl:text-3xl m-4">Shopping Cart</div>
             {products.map((product) => {
-              return (
+              const product_cur = productsDetails[product.itemId];
+              return product_cur ? (
                 <div key={product.itemId}>
                   <div className="grid grid-cols-12 divide-y divide-gray-400 mr-4">
                     <div className="col-span-10 grid grid-cols-8 divide-y divide-gray-400">
@@ -55,7 +72,7 @@ const Checkout = () => {
                       <div className="col-span-6">
                         <div className="font-medium text-black mt-2">
                           <Link to={`/product/${product.itemId}`}>
-                            <ProductDetails product={product} ratings={false} />
+                            <ProductDetails product={product_cur} ratings={false} />
                           </Link>
                         </div>
                         <div>
@@ -95,8 +112,9 @@ const Checkout = () => {
                     </div>
                   </div>
                 </div>
-              );
+              ) : null; // Handle undefined case by rendering nothing
             })}
+
             <div className="text-lg xl:text-xl text-right mb-4 mr-4">
               Subtotal ({itemsNumber} items):{" "}
               <span className="font-semibold">

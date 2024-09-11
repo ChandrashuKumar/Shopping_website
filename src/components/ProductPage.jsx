@@ -14,9 +14,7 @@ const ProductPage = () => {
   const dispatch = useDispatch();
   const authStatus = useSelector((state) => state.auth.status);
   const  userData  = useSelector((state) => state.auth.userData || {}); // Get logged-in userId
-  console.log(userData);
   const userId = (Object.keys(userData).length==0 ? "" : userData.$id);
-  console.log(userId);
 
   const navigate = useNavigate(); // For navigation
 
@@ -37,10 +35,6 @@ const ProductPage = () => {
 
   // Add item to the cart
   const handleAddToCart = async () => {
-    if (!authStatus) {
-      navigate("/login"); // Redirect to login if not logged in
-      return;
-    }
     if (!isInCart) {
       const itemToAdd = {
         userId: userId, 

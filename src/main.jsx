@@ -5,11 +5,7 @@ import './index.css'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import HomePage from './components/HomePage.jsx'
-import Login from './components/Login.jsx'
-import Signup from './components/SignUp.jsx'
-import { AuthLayout } from './components/index.js'
-import {ProductPage} from './components/index.js'
+import {HomePage,Login, Signup, AuthLayout, ProductPage } from './components/index.js'
 import {Cart, AddressForm, SearchResults} from './components/index.js'
 
 const router = createBrowserRouter([

@@ -18,7 +18,7 @@ function Header() {
     const dispatch = useDispatch();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    
+
     const handleLogout = () => {
         authService.logout().then(() => {
             dispatch(logout())
@@ -49,7 +49,7 @@ function Header() {
                     </div>
                     {/* middle */}
                     <div className="flex grow relative items-center">
-                        <Search/>
+                        <Search />
                     </div>
                     {/* right */}
                     <div className="flex items-center m-4">
@@ -76,15 +76,15 @@ function Header() {
                             <div className="text-xs xl:text-sm cursor-pointer">Returns</div>
                             <div className="text-sm xl:text-base font-bold cursor-pointer">& Orders</div>
                         </div>
-                            <div className="flex pr-3 pl-3">
-                                <ShoppingCartIcon className="h-[48px]" />
-                                <div className="relative">
-                                    <div className="absolute right-[9px] font-bold m-2 text-orange-400">
-                                        {cartItemsCount}
-                                    </div>
+                        <div className="flex pr-3 pl-3">
+                            <ShoppingCartIcon className="h-[48px]" />
+                            <div className="relative">
+                                <div className="absolute right-[9px] font-bold m-2 text-orange-400">
+                                    {cartItemsCount}
                                 </div>
-                                <div className="mt-7 text-xs xl:text-sm font-bold">Cart</div>
                             </div>
+                            <div className="mt-7 text-xs xl:text-sm font-bold">Cart</div>
+                        </div>
                         <Bars3Icon className="h-[24px] ml-4 cursor-pointer" onClick={toggleSidebar} />
                     </div>
                 </div>
@@ -102,22 +102,23 @@ function Header() {
             </div>
 
             {/* Sidebar */}
-            <div className={`fixed top-0 right-0 bg-white w-[250px] h-full shadow-lg z-50 p-4 rounded-l-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                <div className="flex justify-between items-center mb-4">
-                    <div className="text-sm font-bold">Hello, {authStatus ? userEmail : 'Guest'}</div>
-                    <button onClick={toggleSidebar}>
-                        <XMarkIcon className="h-6 w-6 text-black" />
+            <div className={`fixed top-0 right-0 bg-gray-100 w-[250px] h-full shadow-lg z-50 p-6 rounded-l-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className="flex justify-between items-center mb-6">
+                    <div className="text-base font-semibold text-gray-800">Hello, {authStatus ? userEmail : 'Guest'}</div>
+                    <button onClick={toggleSidebar} className="text-gray-600 hover:text-gray-800">
+                        <XMarkIcon className="h-6 w-6" />
                     </button>
                 </div>
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-3">
                     {authStatus && (
                         <>
-                            <Link to="/addresses" onClick={toggleSidebar} className="cursor-pointer">Addresses</Link>
-                            <Link to="/cart" onClick={toggleSidebar} className="cursor-pointer">Cart</Link>
+                            <Link to="/addresses" onClick={toggleSidebar} className="text-lg text-gray-700 hover:text-gray-900 transition-colors duration-200">Addresses</Link>
+                            <Link to="/cart" onClick={toggleSidebar} className="text-lg text-gray-700 hover:text-gray-900 transition-colors duration-200">Cart</Link>
                         </>
                     )}
                 </div>
             </div>
+
         </header>
     );
 }
